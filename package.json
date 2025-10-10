@@ -1,0 +1,17 @@
+{
+  "name": "qa-dojo-7-practice",
+  "version": "1.0.0",
+  "description": "e2e practice with pw",
+  "license": "ISC",
+  "author": "Pavlo Hryshchenko",
+  "type": "commonjs",
+  "main": "",
+  "scripts": {},
+  "devDependencies": {
+    "@playwright/test": "^1.55.1",
+    "@types/node": "^24.6.1"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3"
+  }
+}
