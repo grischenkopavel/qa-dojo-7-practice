@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 test.describe(`Registration`, { tag: ["@register", "@smoke"] }, async () => {
   const {
     EMAIL = "default@email.com",
-    USER_NAME = "default_name",
+    USER_NAME = "defaultName",
     PASSWORD = "default_pass",
   } = process.env;
   test(
