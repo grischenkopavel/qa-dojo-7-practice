@@ -25,8 +25,8 @@ test.describe(`Login`, { tag: ["@login", "@smoke"] }, async () => {
         .filter({ hasText: "Sign in" })
         .click({ button: "left" });
 
-      expect(page).toHaveURL(`${baseURL}`);
-      expect(page.locator('[href="/editor"]')).toBeVisible();
+      await expect(page).toHaveURL(`${baseURL}`);
+      await expect(page.locator('[href="/editor"]')).toBeVisible();
     }
   );
   test(
@@ -50,15 +50,19 @@ test.describe(`Login`, { tag: ["@login", "@smoke"] }, async () => {
 
       await page.locator('[href="/settings"]').click();
 
-      expect(page).toHaveURL(`${baseURL}settings`);
+      await expect(page).toHaveURL(`${baseURL}/settings`);
 
       await page
         .locator("[class*=btn]")
         .filter({ hasText: "Or click here to logout" })
         .click();
 
-      expect(page.locator('[href="/login"]').filter({ hasText: "Sign in" }));
-      expect(page.locator('[href="/login"]').filter({ hasText: "Sign up" }));
+      await expect(
+        page.locator('[href="/login"]').filter({ hasText: "Sign in" })
+      ).toContainText("Sign in");
+      await expect(page.getByRole("link", { name: " Sign up" })).toContainText(
+        "Sign up"
+      );
     }
   );
   test(
@@ -78,7 +82,7 @@ test.describe(`Login`, { tag: ["@login", "@smoke"] }, async () => {
         .filter({ hasText: "Sign in" })
         .click({ button: "left" });
 
-      expect(
+      await expect(
         page
           .locator("[class~=error-messages] > li")
           .filter({ hasText: "email can't be blank" })
@@ -91,26 +95,11 @@ test.describe(`Login`, { tag: ["@login", "@smoke"] }, async () => {
         .filter({ hasText: "Sign in" })
         .click({ button: "left" });
 
-      expect(
+      await expect(
         page
           .locator("[class~=error-messages] > li")
           .filter({ hasText: "password can't be blank" })
       ).toBeVisible();
-
-      // test.step("Attempt to login with empty password", async () => {
-      //   await page.goto(`/login`);
-      //   await page.locator("[placeholder=Email]").fill(EMAIL);
-      //   await page
-      //     .locator('[class*="btn"]')
-      //     .filter({ hasText: "Sign in" })
-      //     .click({ button: "left" });
-
-      //   expect(
-      //     page
-      //       .locator("[class~=error-messages] > li")
-      //       .filter({ hasText: "password can't be blank" })
-      //   ).toBeVisible();
-      // });
     }
   );
 });

@@ -4,9 +4,9 @@ import { defineConfig, devices } from "@playwright/test";
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
-import dotenv from 'dotenv';
-import path from 'path';
-dotenv.config({ path: path.resolve(__dirname, '.env') });
+import dotenv from "dotenv";
+import path from "path";
+dotenv.config({ path: path.resolve(__dirname, ".env") });
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -28,8 +28,8 @@ export default defineConfig({
     // baseURL: 'http://localhost:3000',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: "retain-on-failure",
-    screenshot: "only-on-failure",
+    trace: "on",
+    screenshot: { mode: "only-on-failure", fullPage: true },
     video: "retain-on-failure",
     actionTimeout: 20 * 1000,
   },
@@ -40,7 +40,7 @@ export default defineConfig({
       name: "coffee-cart",
       testDir: "./tests/coffee-cart",
       use: {
-        baseURL: process.env.CONDUIT_BASE_URL || "https://coffee-cart.app/",
+        baseURL: process.env.COFFEE_CART_BASE_URL || "https://coffee-cart.app",
         ...devices["Desktop Chrome"],
       },
     },
@@ -49,14 +49,20 @@ export default defineConfig({
       testDir: "./tests/conduit",
       use: {
         baseURL:
-          process.env.CONDUIT_BASE_URL || "https://demo.learnwebdriverio.com/",
+          process.env.CONDUIT_BASE_URL || "https://demo.learnwebdriverio.com",
       },
     },
-
     {
       name: `aria-attributes`,
       testDir: "./tests/aria-attributes",
       use: {},
+    },
+    {
+      name: `demo-qa`,
+      testDir: "./tests/demo-qa",
+      use: {
+        baseURL: "https://demoqa.com",
+      },
     },
 
     // {
