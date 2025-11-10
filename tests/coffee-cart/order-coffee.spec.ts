@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, Locator } from "@playwright/test";
 
 test(
   "CoffeeCard-0001. Initial total is zero",
@@ -9,11 +9,12 @@ test(
       description: "Initial total should be 'Total: $0.00' and cart (0)",
     },
   },
-  async ({ page }) => {
-    await page.goto("https://coffee-cart.app/");
-    await expect(page.locator('[data-test="checkout"]')).toContainText(
-      "Total: $0.00"
-    );
+  async ({ page, baseURL }) => {
+    const checkout: Locator = page.locator('[data-test="checkout"]');
+
+    await page.goto(`${baseURL}`);
+
+    await expect(checkout).toContainText('Total: $0.00');
     await expect(page.getByLabel("Cart page")).toContainText("cart (0)");
   }
 );
@@ -28,8 +29,9 @@ test(
         "Order espresso should be success. 'Thanks for your purchase' message appears",
     },
   },
-  async ({ page }) => {
-    await page.goto("https://coffee-cart.app/");
+  async ({ page, baseURL }) => {
+    await page.goto(`${baseURL}`);
+    
     await page.locator('[data-test="Espresso"]').click();
     await page.locator('[data-test="checkout"]').click();
     await page.getByRole("textbox", { name: "Name" }).fill("pavlo");

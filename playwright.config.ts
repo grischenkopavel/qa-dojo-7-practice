@@ -6,6 +6,7 @@ import { defineConfig, devices } from "@playwright/test";
  */
 import dotenv from "dotenv";
 import path from "path";
+import { off } from "process";
 dotenv.config({ path: path.resolve(__dirname, ".env") });
 
 /**
@@ -64,6 +65,13 @@ export default defineConfig({
         baseURL: "https://demoqa.com",
       },
     },
+    {
+      name: 'homeworks',
+      testDir: "./tests/homeworks",
+      use: {
+        trace: "off",
+      }
+    }
 
     // {
     //   name: 'firefox',
