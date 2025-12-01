@@ -15,7 +15,6 @@ import {
   getRegisterPageLocators,
   createUser,
 } from '../../app/conduit/ui/users.ts';
-import { env } from 'process';
 
 interface article {
   title: string;
@@ -35,7 +34,7 @@ test.describe(
     } = process.env;
 
     const articles: article[] = [];
-    const articlesCount: number = 1;
+    const articlesCount: number = 2;
 
     for (let i = 0; i < articlesCount; i++) {
       let title = faker.music.artist();
@@ -75,31 +74,51 @@ test.describe(
             page.locator('[data-qa-id="article-body"]>p')
           ).toHaveText(article.content);
         });
-
-        await test.step.skip(
-          `Remove created article with title ${article.title}`,
-          async () => {
-            await page.locator('[data-qa-id="article-delete"]').first().click();
-          }
-        );
       }
 
       await test.step('Newly created articles are present under the global feed', async () => {
-        await page.goto('/', {waitUntil: 'load'});
-        const articleTitles: Locator[] = await page
-          .locator('[data-qa-type="preview-title"]')
-          .all();
+        let isVisible = false;
 
-        for (const article of articleTitles) {
-          let articleTitle = await article.textContent();
-          console.log(await article.textContent());
+        await page.goto('/', { waitUntil: 'load' });
 
-          for (const myArticle of articles) {
-            if (myArticle.title.includes(articleTitle!)){
-              expect(myArticle.title).toContain(articleTitle);
+        await expect(
+          page
+            .locator('[data-test="page-link-1"]')
+            .getByRole('link', { name: '1' })
+        ).toBeVisible();
+
+        const pagesCount = await page.locator('.pagination li').count();
+
+        expect(pagesCount).toBeGreaterThan(0);
+
+        for (const articleToFind of articles) {
+          await test.step(`Find article with title ${articleToFind.title}`, async () => {
+            isVisible = false;
+            for (let i = 1; i <= pagesCount; i++) {
+              if (isVisible) {
+                break;
+              }
+
+              await page
+                .locator(`[data-test="page-link-${i}"]`)
+                .getByRole('link', { name: `${i}` })
+                .click();
+
+              try {
+                await expect(
+                  page.getByRole('link', { name: articleToFind.title })
+                ).toBeVisible({ timeout: 500 });
+
+                isVisible = true;
+              } catch (e) {}
             }
-          }
+          });
         }
+      });
+
+      //TODO add logic to remove created articles
+      await test.step.skip(`Remove created article with title {}`, async () => {
+        await page.locator('[data-qa-id="article-delete"]').first().click();
       });
     });
   }
@@ -125,5 +144,39 @@ test.skip('Template', async ({ page }) => {
 
   for (const article of articleTitles) {
     console.log(await article.textContent());
+  }
+});
+
+test.skip('Pagination', async ({ page }) => {
+  const elementToFind = 'Demo Article';
+  let isVisible = false;
+
+  await page.goto('/', { waitUntil: 'load' });
+
+  await expect(
+    page.locator('[data-test="page-link-1"]').getByRole('link', { name: '1' })
+  ).toBeVisible();
+
+  const pagesCount = await page.locator('.pagination li').count();
+
+  expect(pagesCount).toBeGreaterThan(0);
+
+  for (let i = 1; i <= pagesCount; i++) {
+    if (isVisible) {
+      break;
+    }
+
+    await page
+      .locator(`[data-test="page-link-${i}"]`)
+      .getByRole('link', { name: `${i}` })
+      .click();
+
+    try {
+      await expect(page.getByRole('link', { name: elementToFind })).toBeVisible(
+        { timeout: 500 }
+      );
+
+      isVisible = true;
+    } catch (e) {}
   }
 });

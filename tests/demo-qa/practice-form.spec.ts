@@ -4,6 +4,7 @@ import {
   getAllPracticeFormLocators,
   fillPracticeFormAll,
   fillPracticeFormRequiredOnly,
+  fillPracticeFormNotRequiredOnly,
 } from '../../app/demo-qa/ui/practice-form.ts';
 
 test.describe(
@@ -20,6 +21,9 @@ test.describe(
       subject: 'Maths',
       hobbies: 'Sports',
       currentAddress: 'Somewhere',
+      state: 'Rajasthan',
+      city: 'Jaipur',
+      filePath: './test-data/demo-qa/API-and-UI-Together.png',
     };
     const requiredInputData = {
       firstName: 'Kate',
@@ -27,8 +31,16 @@ test.describe(
       gender: 'Female',
       mobile: 3809516666,
     };
-    //test.beforeAll('Arrange test data', async () => {});
-
+    const notRequiredInputData = {
+      email: 'pg@gm.com',
+      dateOfBirth: '17 Dec 2021',
+      subject: 'Maths',
+      hobbies: 'Reading',
+      currentAddress: 'Somewhere',
+      state: 'Rajasthan',
+      city: 'Jaipur',
+    };
+    
     test.beforeEach(
       'Navigate to Student Registration Form page',
       async ({ page }) => {
@@ -55,7 +67,7 @@ test.describe(
         ).toBeInViewport();
       }
     );
-    test.only(
+    test(
       'DQ-practice-form:0002. Required data only',
       {
         annotation: {
@@ -66,10 +78,27 @@ test.describe(
       },
       async ({ page }) => {
         await fillPracticeFormRequiredOnly(page, requiredInputData);
-
+               
         await expect(
           page.getByRole('dialog', { name: 'Thanks for submitting the form' })
         ).toBeInViewport();
+      }
+    );
+    test(
+      'DQ-practice-form:0003. Non-required data only',
+      {
+        annotation: {
+          type: 'description',
+          description:
+            'Submit with Student Registration Form with non required data. No form submission',
+        },
+      },
+      async ({ page }) => {
+        await fillPracticeFormNotRequiredOnly(page, notRequiredInputData);
+               
+        await expect(
+          page.getByRole('dialog', { name: 'Thanks for submitting the form' })
+        ).not.toBeInViewport();
       }
     );
   }

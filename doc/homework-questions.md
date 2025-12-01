@@ -1,6 +1,7 @@
 ### Homework #6 session questions
 
 - Git + branching
+- e2e courses for more advanced - skip JSCore
 
 ### Homework #5 session questions
 

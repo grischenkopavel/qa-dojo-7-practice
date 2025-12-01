@@ -1,15 +1,18 @@
 import { Page } from '@playwright/test';
 
 interface IStudentData {
-  firstName: string;
-  lastName: string;
+  firstName?: string;
+  lastName?: string;
   email?: string;
-  gender: string;
-  mobile: number;
+  gender?: string;
+  mobile?: number;
   dateOfBirth?: string;
   subject?: string;
   hobbies?: string;
   currentAddress?: string;
+  state?: string;
+  city?: string;
+  filePath?: string;
 }
 
 export function getAllPracticeFormLocators(page: Page) {
@@ -40,6 +43,7 @@ export function getAllPracticeFormLocators(page: Page) {
   });
   const stateLocator = page.locator('[id="state"]');
   const cityLocator = page.locator('[id="city"]');
+  const selectPictureLocator = page.locator('#uploadPicture');
   const submitButtonLocator = page.getByRole('button', { name: 'Submit' });
 
   return {
@@ -58,25 +62,27 @@ export function getAllPracticeFormLocators(page: Page) {
     currentAddressLocator,
     stateLocator,
     cityLocator,
+    selectPictureLocator,
     submitButtonLocator,
   };
 }
 
 export async function genderRadio(page: Page, gender: string) {
+  const practiceFormLocators = getAllPracticeFormLocators(page);
   if (gender === 'Male') {
-    await getAllPracticeFormLocators(page).genderMaleRadioLocator.check({
+    await practiceFormLocators.genderMaleRadioLocator.check({
       force: true,
     });
     return;
   }
   if (gender === 'Female') {
-    await getAllPracticeFormLocators(page).genderFemaleRadioLocator.check({
+    await practiceFormLocators.genderFemaleRadioLocator.check({
       force: true,
     });
     return;
   }
   if (gender === 'Other') {
-    await getAllPracticeFormLocators(page).genderOtherRadioLocator.check({
+    await practiceFormLocators.genderOtherRadioLocator.check({
       force: true,
     });
     return;
@@ -84,52 +90,93 @@ export async function genderRadio(page: Page, gender: string) {
     throw new Error(`Wrong input: ${gender}`);
   }
 }
+export async function hobbiesCheckbox(page: Page, hobbies: string) {
+  const practiceFormLocators = getAllPracticeFormLocators(page);
+  if (hobbies === 'Sports') {
+    await practiceFormLocators.hobbiesSportsLocator.check({
+      force: true,
+    });
+  }
+  if (hobbies === 'Reading') {
+    await practiceFormLocators.hobbiesReadingLocator.check({
+      force: true,
+    });
+  }
+  if (hobbies === 'Music') {
+    await practiceFormLocators.hobbiesMusicLocator.check({
+      force: true,
+    });
+  } else if (hobbies != 'Sports' && hobbies != 'Reading' && hobbies != 'Music') {
+    throw new Error(`Wrong input: ${hobbies}`);
+  }
+}
+
+export async function uploadPicture(page: Page, filePath: string){
+ const practiceFormLocators = getAllPracticeFormLocators(page);
+ await practiceFormLocators.selectPictureLocator.click();
+ await practiceFormLocators.selectPictureLocator.setInputFiles(filePath);
+ //await page.getByRole('button', { name: 'Submit' }).click();
+}
 
 export async function fillPracticeFormAll(
   page: Page,
   studentData: IStudentData
 ) {
-  await getAllPracticeFormLocators(page).firstNameLocator.fill(
-    studentData.firstName
+  const practiceFormLocators = getAllPracticeFormLocators(page);
+
+  await practiceFormLocators.firstNameLocator.fill(studentData.firstName!);
+  await practiceFormLocators.lastNameLocator.fill(studentData.lastName!);
+  await practiceFormLocators.emailLocator.fill(studentData.email!);
+  await genderRadio(page, studentData.gender!);
+  await practiceFormLocators.mobileNumberLocator.fill(
+    studentData.mobile!.toString()
   );
-  await getAllPracticeFormLocators(page).lastNameLocator.fill(
-    studentData.lastName
-  );
-  await getAllPracticeFormLocators(page).emailLocator.fill(studentData.email!);
-  await genderRadio(page, studentData.gender);
-  await getAllPracticeFormLocators(page).mobileNumberLocator.fill(
-    studentData.mobile.toString()
-  );
-  await getAllPracticeFormLocators(page).dateOfBirthLocator.fill(
-    studentData.dateOfBirth!
-  );
-  await getAllPracticeFormLocators(page).dateOfBirthLocator.press('Enter');
-  await getAllPracticeFormLocators(page).subjectLocator.fill(
-    studentData.subject!
-  );
-  await getAllPracticeFormLocators(page).subjectLocator.press('Enter');
-  await getAllPracticeFormLocators(page).hobbiesSportsLocator.check({
-    force: true,
-  });
-  await getAllPracticeFormLocators(page).currentAddressLocator.fill(
+  await practiceFormLocators.dateOfBirthLocator.fill(studentData.dateOfBirth!);
+  await practiceFormLocators.dateOfBirthLocator.press('Enter');
+  await practiceFormLocators.subjectLocator.fill(studentData.subject!);
+  await practiceFormLocators.subjectLocator.press('Enter');
+  await hobbiesCheckbox(page, studentData.hobbies!);
+  await practiceFormLocators.currentAddressLocator.fill(
     studentData.currentAddress!
   );
-  await getAllPracticeFormLocators(page).submitButtonLocator.click();
+  await practiceFormLocators.stateLocator.click();
+  await page.getByText(`${studentData.state}`, { exact: true }).click();
+  await practiceFormLocators.cityLocator.click();
+  await page.getByText(`${studentData.city}`, { exact: true }).click();
+  await uploadPicture(page, studentData.filePath!);
+  await practiceFormLocators.submitButtonLocator.click();
 }
 
 export async function fillPracticeFormRequiredOnly(
   page: Page,
   studentData: IStudentData
 ) {
-  await getAllPracticeFormLocators(page).firstNameLocator.fill(
-    studentData.firstName
+  const practiceFormLocators = getAllPracticeFormLocators(page);
+  await practiceFormLocators.firstNameLocator.fill(studentData.firstName!);
+  await practiceFormLocators.lastNameLocator.fill(studentData.lastName!);
+  await genderRadio(page, studentData.gender!);
+  await practiceFormLocators.mobileNumberLocator.fill(
+    studentData.mobile!.toString()
   );
-  await getAllPracticeFormLocators(page).lastNameLocator.fill(
-    studentData.lastName
+  await practiceFormLocators.submitButtonLocator.click();
+}
+export async function fillPracticeFormNotRequiredOnly(
+  page: Page,
+  studentData: IStudentData
+) {
+  const practiceFormLocators = getAllPracticeFormLocators(page);
+  await practiceFormLocators.emailLocator.fill(studentData.email!);
+  await practiceFormLocators.dateOfBirthLocator.fill(studentData.dateOfBirth!);
+  await practiceFormLocators.dateOfBirthLocator.press('Enter');
+  await practiceFormLocators.subjectLocator.fill(studentData.subject!);
+  await practiceFormLocators.subjectLocator.press('Enter');
+  await hobbiesCheckbox(page, studentData.hobbies!);
+  await practiceFormLocators.currentAddressLocator.fill(
+    studentData.currentAddress!
   );
-  await genderRadio(page, studentData.gender);
-  await getAllPracticeFormLocators(page).mobileNumberLocator.fill(
-    studentData.mobile.toString()
-  );
-  await getAllPracticeFormLocators(page).submitButtonLocator.click();
+  await practiceFormLocators.stateLocator.click();
+  await page.getByText(`${studentData.state}`, { exact: true }).click();
+  await practiceFormLocators.cityLocator.click();
+  await page.getByText(`${studentData.city}`, { exact: true }).click();
+  await practiceFormLocators.submitButtonLocator.click();
 }
