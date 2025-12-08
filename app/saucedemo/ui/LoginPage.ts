@@ -1,5 +1,5 @@
 import { Locator, Page } from '@playwright/test';
-import { BasePage } from './base-page';
+import { BasePage } from './BasePage';
 
 export class Login extends BasePage {
   private userNameTextBoxLocator: Locator = this.page.locator(
@@ -28,7 +28,12 @@ export class Login extends BasePage {
     await this.loginButtonLocator.click();
   };
 
+  getLoginButtonLocator = () => {
+    return this.loginButtonLocator;
+  };
+
   login = async (userName: string, password: string) => {
+    await this.page.goto('/');
     await this.fillUserName(userName);
     await this.fillPassword(password);
     await this.clickLoginButton();

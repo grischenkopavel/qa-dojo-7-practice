@@ -1,9 +1,9 @@
-import { test, expect, Locator } from '@playwright/test';
-import { Login } from '../../app/saucedemo/ui/login-page';
-import { Cart } from '../../app/saucedemo/ui/cart-page';
-import { Inventory } from '../../app/saucedemo/ui/inventory-page';
-import { CheckoutStepOnePage } from '../../app/saucedemo/ui/checkout-step-one';
-import { CheckoutStepTwoPage } from '../../app/saucedemo/ui/checkout-step-two';
+import { test, expect } from '@playwright/test';
+import { Login } from '../../../app/saucedemo/ui/LoginPage';
+import { Cart } from '../../../app/saucedemo/ui/CartPage';
+import { Inventory } from '../../../app/saucedemo/ui/InventoryPage';
+import { CheckoutStepOnePage } from '../../../app/saucedemo/ui/CheckoutStepOne';
+import { CheckoutStepTwoPage } from '../../../app/saucedemo/ui/CheckoutStepTwo';
 
 const userName = 'standard_user';
 const password = 'secret_sauce';
@@ -12,9 +12,6 @@ const inventoryTitle2 = 'Sauce Labs Fleece Jacket';
 
 test.describe('Checkout Step One Page', async () => {
   test.beforeEach('Login to saucedemo', async ({ page }) => {
-    const cartLocator: Locator = page.locator(
-      '[data-test="shopping-cart-link"]'
-    );
     const loginPage: Login = new Login(page);
 
     await page.goto('https://www.saucedemo.com/');
@@ -25,7 +22,7 @@ test.describe('Checkout Step One Page', async () => {
     await inventoryPage.addToCartByTitle(inventoryTitle);
     await inventoryPage.addToCartByTitle(inventoryTitle2);
 
-    await cartLocator.click();
+    await inventoryPage.clickCartLink();
 
     const cartPage: Cart = new Cart(page);
     await cartPage.checkout();

@@ -71,7 +71,16 @@ export default defineConfig({
       name: 'saucedemo',
       testDir: './tests/saucedemo',
       use: {
-        baseURL: 'https://www.saucedemo.com/',
+        baseURL: 'https://www.saucedemo.com',
+        trace: 'on',
+        viewport: { width: 1920, height: 1080 },
+      },
+    },
+    {
+      name: 'zara',
+      testDir: './tests/zara',
+      use: {
+        baseURL: 'https://www.zara.com/uk/',
         trace: 'on',
         viewport: { width: 1920, height: 1080 },
       },

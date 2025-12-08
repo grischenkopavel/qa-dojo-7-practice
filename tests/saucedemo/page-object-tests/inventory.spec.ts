@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
-import { Login } from '../../app/saucedemo/ui/login-page';
-import { Inventory } from '../../app/saucedemo/ui/inventory-page';
+import { Login } from '../../../app/saucedemo/ui/LoginPage';
+import { Inventory } from '../../../app/saucedemo/ui/InventoryPage';
 
 test.beforeEach('Login to saucedemo', async ({ page }) => {
   const userName = 'standard_user';
@@ -52,7 +52,9 @@ test(
 
     await inventoryPage.removeFromCartByTitle(inventoryTitle);
 
-    await expect(inventoryPage.getItemAddToCartButtonByTitle(inventoryTitle)).toHaveText('Add to cart');
+    await expect(
+      inventoryPage.getItemAddToCartButtonByTitle(inventoryTitle)
+    ).toHaveText('Add to cart');
   }
 );
 
