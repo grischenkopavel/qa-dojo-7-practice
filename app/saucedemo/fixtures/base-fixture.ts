@@ -20,6 +20,7 @@ type SauceDemoFixture = {
 export const test = base.extend<SauceDemoFixture>({
   userName: 'standard_user',
   userPassword: 'secret_sauce',
+  
   before: [
     async ({ loginPage, userName, userPassword }, use) => {
       await loginPage.login(userName!, userPassword!);

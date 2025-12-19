@@ -1,5 +1,5 @@
 import { Locator, Page } from '@playwright/test';
-import { BasePage } from './BasePage';
+import { BasePage } from './Base/BasePage';
 
 export class Inventory extends BasePage {
   //private inventoryItem = this.getItemByTitle(inventoryTitle: string)

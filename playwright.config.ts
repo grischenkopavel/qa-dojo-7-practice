@@ -6,7 +6,6 @@ import { defineConfig, devices } from '@playwright/test';
  */
 import dotenv from 'dotenv';
 import path from 'path';
-import { off } from 'process';
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 /**
@@ -15,6 +14,8 @@ dotenv.config({ path: path.resolve(__dirname, '.env') });
 export default defineConfig({
   timeout: 25 * 1000,
   testDir: './tests',
+  //Patch to global setup file
+  globalSetup: './globalSetup.ts',
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Retry on CI only */

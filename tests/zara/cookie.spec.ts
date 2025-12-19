@@ -1,5 +1,4 @@
 import { test, expect } from '@playwright/test';
-import path from 'path';
 
 test.describe(
   'Work with cookie',
@@ -18,7 +17,14 @@ test.describe(
       name: 'zara',
       value: 'testCookie',
       domain: '.zara.com',
-      path: '/some/path',
+      path: '/',
+    };
+
+    const cookieToUpdate = {
+      name: 'CookiesConsent',
+      value: 'UA',
+      domain: '.zara.com',
+      path: '/uk',
     };
 
     test.beforeEach('Navigate to zara.com.uk', async ({ page }) => {
@@ -44,29 +50,69 @@ test.describe(
 
         expect(cookies).toBeTruthy();
         expect(cookiesLength).toBeGreaterThan(0);
-
-        await context.addCookies([newCookie]);
-
-        expect(cookiesLength).toBe(cookiesLength + 1);
       }
     );
 
-    test.fixme('Add cookie', async ({ page, context }) => {
+    test('Add cookie', async ({ context }) => {
       cookies = await context.cookies();
       cookiesLength = cookies.length;
-      await page.context().addCookies([newCookie]);
 
+      await context.addCookies([newCookie]);
+      cookies = await context.cookies();
       newCookiesLength = cookies.length;
 
       expect(newCookiesLength).toBe(cookiesLength + 1);
     });
 
-    test('Clear cookie', async ({ context }) => {
+    test(
+      'Update cookie',
+      {
+        annotation: {
+          type: 'description',
+          description:
+            'Flow to update cookie: get cookie -> update - > clear -> add updated',
+        },
+      },
+      async ({ context }) => {
+        cookies = await context.cookies();
+
+        const updatedCookies = cookies.map((cookie) => {
+          if (cookie.name === cookieToUpdate.name) {
+            cookie.value = cookieToUpdate.value;
+          }
+          return cookie;
+        });
+
+        await context.clearCookies();
+        await context.addCookies(updatedCookies);
+        cookies = await context.cookies();
+
+        const updatedCookie = cookies.filter((cookie) => {
+          return cookie.name === cookieToUpdate.name;
+        });
+
+        expect(updatedCookie[0].value).toBe(cookieToUpdate.value);
+      }
+    );
+
+    test('Clear all cookies', async ({ context }) => {
+      cookies = await context.cookies();
+      cookiesLength = cookies.length;
+      await context.clearCookies();
+
+      const newCookie = await context.cookies();
+      newCookiesLength = newCookie.length;
+
+      expect(newCookiesLength).toBe(0);
+    });
+
+    test('Clear specific cookie', async ({ context }) => {
       cookies = await context.cookies();
       cookiesLength = cookies.length;
       await context.clearCookies({ name: 'CookiesConsent' });
-         
-      newCookiesLength = cookies.length;
+
+      const newCookie = await context.cookies();
+      newCookiesLength = newCookie.length;
 
       expect(newCookiesLength).toBe(cookiesLength - 1);
     });

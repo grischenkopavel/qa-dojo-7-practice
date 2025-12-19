@@ -29,8 +29,6 @@ test.describe('Tests with standard_user', { tag: ['@login'] }, () => {
   );
 });
 
-//how to disable auto fixture for the specific test. create a separate fixture variant?
-
 test.describe('Tests with locked_out_user', { tag: ['@login'] }, () => {
   test.use({ userName: users.lockedUserName, userPassword: users.password });
 

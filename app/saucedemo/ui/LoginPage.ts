@@ -1,5 +1,5 @@
 import { Locator, Page } from '@playwright/test';
-import { BasePage } from './BasePage';
+import { BasePage } from './Base/BasePage';
 
 export class Login extends BasePage {
   private userNameTextBoxLocator: Locator = this.page.locator(

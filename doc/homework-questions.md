@@ -1,3 +1,9 @@
+### Homework #xx session questions
+
+- Debug. Enable/disable globally. Enable during the development, disable before commit
+- Login where confirmation is needed via email or phone application
+- e2e courses for more advanced - skip JSCore
+
 ### Homework #6 session questions
 
 - Git + branching
