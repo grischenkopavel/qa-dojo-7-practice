@@ -15,7 +15,7 @@ export default defineConfig({
   timeout: 25 * 1000,
   testDir: './tests',
   //Patch to global setup file
-  globalSetup: './globalSetup.ts',
+  //globalSetup: './globalSetup.ts',
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Retry on CI only */
