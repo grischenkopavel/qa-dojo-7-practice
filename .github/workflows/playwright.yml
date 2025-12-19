@@ -33,7 +33,7 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests for saucedemo page object tests
-      run: npx playwright test tests/saucedemo/page-object-tests
+      run: npx playwright test tests/saucedemo/page-object-tests --workers=${{ env.WORKER_COUNT }}
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
